@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Marée — Solitaire</title>
+<style>
+  :root {
+    --bg: #0b3d2e;
+    --bg-dark: #072a1f;
+    --card-bg: #fdfaf3;
+    --card-border: #1a1a1a;
+    --red: #b3261e;
+    --black: #1a1a1a;
+    --gold: #d4af37;
+    --slot: rgba(255,255,255,0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: radial-gradient(ellipse at top, var(--bg) 0%, var(--bg-dark) 100%);
+    color: #f0ede4;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  h1 {
+    text-align: center;
+    margin: 0 0 4px;
+    font-size: 1.8em;
+    letter-spacing: 2px;
+    color: var(--gold);
+  }
+  .subtitle {
+    text-align: center;
+    color: #cfcabc;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+  }
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .toolbar button {
+    background: var(--gold);
+    border: none;
+    color: #1a1a1a;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .toolbar button:disabled {
+    background: #6b6350;
+    cursor: not-allowed;
+  }
+  .tide-count {
+    background: var(--slot);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--gold);
+  }
+  .foundations {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tableau {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 76px;
+  }
+  .column-label {
+    font-size: 0.7em;
+    color: #9c9686;
+    margin-bottom: 4px;
+  }
+  .slot {
+    width: 68px;
+    height: 96px;
+    border-radius: 8px;
+    background: var(--slot);
+    border: 2px dashed rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    width: 68px;
+    height: 96px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 6px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    transition: transform 0.1s;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card.selected {
+    outline: 3px solid var(--gold);
+    transform: translateY(-6px);
+  }
+  .card.red { color: var(--red); }
+  .card.black { color: var(--black); }
+  .card.jack::after {
+    content: "P";
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    font-size: 0.65em;
+    font-weight: bold;
+    color: var(--gold);
+    background: rgba(0,0,0,0.06);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rank-top { font-weight: bold; font-size: 1.1em; }
+  .rank-bottom { font-weight: bold; font-size: 1.1em; align-self: flex-end; transform: rotate(180deg); }
+  .back {
+    background: repeating-linear-gradient(45deg, #1a4d3a, #1a4d3a 6px, #0e3527 6px, #0e3527 12px);
+    border: 2px solid #06231a;
+  }
+  .col-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .col-cards .card, .col-cards .back {
+    margin-top: -68px;
+  }
+  .col-cards .card:first-child, .col-cards .back:first-child {
+    margin-top: 0;
+  }
+  .msg {
+    text-align: center;
+    margin: 18px auto;
+    max-width: 480px;
+    font-size: 1.1em;
+    min-height: 1.4em;
+    color: var(--gold);
+  }
+  .win-banner {
+    text-align: center;
+    font-size: 1.4em;
+    color: var(--gold);
+    margin: 20px;
+  }
+  .rules {
+    max-width: 560px;
+    margin: 24px auto 0;
+    background: rgba(0,0,0,0.25);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #d8d3c3;
+  }
+  .rules h2 { color: var(--gold); font-size: 1em; margin-top: 0;}
+</style>
+</head>
+<body>
+
+<h1>MARÉE</h1>
+<div class="subtitle">Un solitaire original — colonnes de 8, Valets Passeurs, jeton Marée</div>
+
+<div class="toolbar">
+  <button id="newGameBtn">Nouvelle partie</button>
+  <div class="tide-count">🌊 Jetons Marée : <span id="tideCount">0</span></div>
+  <button id="undoBtn" disabled>Annuler (jeton)</button>
+</div>
+
+<div class="foundations" id="foundations"></div>
+<div class="msg" id="msg">Choisis une carte visible, puis choisis sa destination.</div>
+<div class="tableau" id="tableau"></div>
+
+<div class="rules">
+  <h2>Règles rapides</h2>
+  Fondations : As → Roi, même couleur (♠♥♦♣). Tableau : pose une carte sur une de valeur immédiatement supérieure et de couleur opposée (rouge/noir). Les <strong>Valets</strong> sont des <strong>Passeurs</strong> : ils acceptent n'importe quelle carte, et se posent sur n'importe quelle carte. Vide une colonne entièrement pour gagner un jeton Marée, utilisable pour annuler ton dernier coup.
+</div>
+
+<script>
+const SUITS = [
+  {sym:'♠', color:'black', name:'Pique'},
+  {sym:'♥', color:'red', name:'Cœur'},
+  {sym:'♦', color:'red', name:'Carreau'},
+  {sym:'♣', color:'black', name:'Trèfle'},
+];
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+function buildDeck() {
+  const deck = [];
+  for (const suit of SUITS) {
+    for (let r = 0; r < RANKS.length; r++) {
+      deck.push({ suit: suit.sym, color: suit.color, rank: RANKS[r], value: r + 1, id: suit.sym + RANKS[r] });
+    }
+  }
+  return deck;
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let state = null;
+
+function newGame() {
+  const deck = shuffle(buildDeck());
+  const columns = [];
+  let idx = 0;
+  const sizes = [7,7,7,7,6,6,6,6];
+  for (let c = 0; c < 8; c++) {
+    const size = sizes[c];
+    const cards = deck.slice(idx, idx + size).map((card, i) => ({
+      ...card,
+      faceUp: i === size - 1
+    }));
+    idx += size;
+    columns.push(cards);
+  }
+  state = {
+    columns,
+    foundations: { '♠': [], '♥': [], '♦': [], '♣': [] },
+    tideTokens: 0,
+    selected: null,
+    history: [],
+    won: false,
+    lost: false,
+  };
+  setMsg('Choisis une carte visible, puis choisis sa destination.');
+  render();
+}
+
+function snapshot() {
+  return JSON.parse(JSON.stringify({
+    columns: state.columns,
+    foundations: state.foundations,
+    tideTokens: state.tideTokens,
+  }));
+}
+
+function pushHistory() {
+  state.history.push(snapshot());
+  if (state.history.length > 30) state.history.shift();
+}
+
+function isJack(card) { return card.rank === 'J'; }
+
+function canPlaceOnTableau(card, targetCard) {
+  if (isJack(card) || isJack(targetCard)) return true;
+  return targetCard.value === card.value + 1 && targetCard.color !== card.color;
+}
+
+function canPlaceOnFoundation(card) {
+  const pile = state.foundations[card.suit];
+  const topValue = pile.length ? pile[pile.length - 1].value : 0;
+  return card.value === topValue + 1;
+}
+
+function findColumnOf(card) {
+  return state.columns.findIndex(col => col.length && col[col.length - 1].id === card.id);
+}
+
+function setMsg(text) {
+  document.getElementById('msg').textContent = text;
+}
+
+function checkColumnCleared(prevLengths) {
+  state.columns.forEach((col, i) => {
+    if (prevLengths[i] > 0 && col.length === 0) {
+      state.tideTokens += 1;
+    }
+  });
+}
+
+function tryMoveToFoundation(card) {
+  if (isJack(card)) { setMsg("Un Valet ne peut pas aller sur une Fondation."); return false; }
+  if (!canPlaceOnFoundation(card)) { setMsg("Cette carte ne peut pas aller sur cette Fondation."); return false; }
+  const colIdx = findColumnOf(card);
+  if (colIdx === -1) return false;
+  const prevLengths = state.columns.map(c => c.length);
+  pushHistory();
+  state.columns[colIdx].pop();
+  state.foundations[card.suit].push(card);
+  if (state.columns[colIdx].length) {
+    state.columns[colIdx][state.columns[colIdx].length - 1].faceUp = true;
+  }
+  checkColumnCleared(prevLengths);
+  return true;
+}
+
+function tryMoveToColumn(card, targetColIdx) {
+  const targetCol = state.columns[targetColIdx];
+  const sourceColIdx = findColumnOf(card);
+  if (sourceColIdx === -1) return false;
+  if (sourceColIdx === targetColIdx) { setMsg("Choisis une colonne différente."); return false; }
+
+  if (targetCol.length === 0) {
+    const prevLengths = state.columns.map(c => c.length);
+    pushHistory();
+    state.columns[sourceColIdx].pop();
+    targetCol.push(card);
+    if (state.columns[sourceColIdx].length) {
+      state.columns[sourceColIdx][state.columns[sourceColIdx].length - 1].faceUp = true;
+    }
+    checkColumnCleared(prevLengths);
+    return true;
+  }
+
+  const targetCard = targetCol[targetCol.length - 1];
+  if (!canPlaceOnTableau(card, targetCard)) {
+    setMsg("Coup impossible : couleur/valeur incompatible (sauf Valet Passeur).");
+    return false;
+  }
+  const prevLengths = state.columns.map(c => c.length);
+  pushHistory();
+  state.columns[sourceColIdx].pop();
+  targetCol.push(card);
+  if (state.columns[sourceColIdx].length) {
+    state.columns[sourceColIdx][state.columns[sourceColIdx].length - 1].faceUp = true;
+  }
+  checkColumnCleared(prevLengths);
+  return true;
+}
+
+function checkWin() {
+  const total = Object.values(state.foundations).reduce((s, p) => s + p.length, 0);
+  if (total === 52) {
+    state.won = true;
+    setMsg('🎉 Marée complète ! Tu as gagné !');
+  }
+}
+
+function hasAnyMove() {
+  for (const col of state.columns) {
+    if (!col.length) continue;
+    const card = col[col.length - 1];
+    if (canPlaceOnFoundation(card)) return true;
+    for (let i = 0; i < state.columns.length; i++) {
+      const target = state.columns[i];
+      if (!target.length) { if (card !== target[0]) return true; continue; }
+      const targetTop = target[target.length - 1];
+      if (targetTop.id !== card.id && canPlaceOnTableau(card, targetTop)) return true;
+    }
+  }
+  return false;
+}
+
+function onCardClick(card) {
+  if (state.won) return;
+  if (!card.faceUp) return;
+
+  if (!state.selected) {
+    state.selected = card;
+    setMsg('Carte choisie : ' + card.rank + card.suit + '. Choisis la Fondation ou la colonne de destination (ou re-clique dessus pour annuler la sélection).');
+    render();
+    return;
+  }
+
+  if (state.selected.id === card.id) {
+    state.selected = null;
+    setMsg('Choisis une carte visible, puis choisis sa destination.');
+    render();
+    return;
+  }
+
+  const targetColIdx = findColumnOf(card) !== -1 && state.columns[findColumnOf(card)][state.columns[findColumnOf(card)].length-1].id === card.id
+    ? findColumnOf(card) : -1;
+
+  if (targetColIdx !== -1) {
+    const moved = tryMoveToColumn(state.selected, targetColIdx);
+    if (moved) { checkWin(); state.selected = null; setMsg(hasAnyMove() || state.won ? 'Coup joué.' : 'Aucun coup possible — partie bloquée.'); }
+  }
+  render();
+}
+
+function onFoundationClick(suit) {
+  if (state.won) return;
+  if (!state.selected) { setMsg("Choisis d'abord une carte."); return; }
+  if (state.selected.suit !== suit) { setMsg("Cette carte ne correspond pas à cette Fondation."); return; }
+  const moved = tryMoveToFoundation(state.selected);
+  if (moved) { checkWin(); state.selected = null; setMsg(hasAnyMove() || state.won ? 'Coup joué.' : 'Aucun coup possible — partie bloquée.'); }
+  render();
+}
+
+function onEmptyColumnClick(colIdx) {
+  if (state.won) return;
+  if (!state.selected) return;
+  if (state.columns[colIdx].length !== 0) return;
+  const moved = tryMoveToColumn(state.selected, colIdx);
+  if (moved) { checkWin(); state.selected = null; setMsg(hasAnyMove() || state.won ? 'Coup joué.' : 'Aucun coup possible — partie bloquée.'); }
+  render();
+}
+
+function undoMove() {
+  if (state.tideTokens <= 0 || state.history.length === 0) return;
+  const prev = state.history.pop();
+  state.columns = prev.columns;
+  state.foundations = prev.foundations;
+  state.tideTokens = Math.max(0, prev.tideTokens - 1);
+  state.selected = null;
+  state.won = false;
+  setMsg('Dernier coup annulé grâce à un jeton Marée.');
+  render();
+}
+
+function cardEl(card, isTop) {
+  const div = document.createElement('div');
+  if (!card.faceUp) {
+    div.className = 'back';
+    div.style.width = '68px'; div.style.height = '96px'; div.style.borderRadius = '8px';
+    return div;
+  }
+  div.className = 'card ' + card.color + (isJack(card) ? ' jack' : '') + (state.selected && state.selected.id === card.id ? ' selected' : '');
+  const top = document.createElement('div');
+  top.className = 'rank-top';
+  top.textContent = card.rank + card.suit;
+  const bottom = document.createElement('div');
+  bottom.className = 'rank-bottom';
+  bottom.textContent = card.rank + card.suit;
+  div.appendChild(top);
+  div.appendChild(bottom);
+  if (isTop) {
+    div.addEventListener('click', () => onCardClick(card));
+  }
+  return div;
+}
+
+function render() {
+  document.getElementById('tideCount').textContent = state.tideTokens;
+  document.getElementById('undoBtn').disabled = !(state.tideTokens > 0 && state.history.length > 0);
+
+  const fEl = document.getElementById('foundations');
+  fEl.innerHTML = '';
+  for (const suit of SUITS) {
+    const pile = state.foundations[suit.sym];
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.alignItems = 'center';
+    const label = document.createElement('div');
+    label.className = 'column-label';
+    label.textContent = suit.name;
+    wrap.appendChild(label);
+    if (pile.length === 0) {
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.style.color = suit.color === 'red' ? 'var(--red)' : '#888';
+      slot.textContent = suit.sym;
+      slot.addEventListener('click', () => onFoundationClick(suit.sym));
+      wrap.appendChild(slot);
+    } else {
+      const top = pile[pile.length - 1];
+      const el = cardEl(top, true);
+      el.addEventListener('click', () => onFoundationClick(suit.sym));
+      wrap.appendChild(el);
+    }
+    fEl.appendChild(wrap);
+  }
+
+  const tEl = document.getElementById('tableau');
+  tEl.innerHTML = '';
+  state.columns.forEach((col, i) => {
+    const colWrap = document.createElement('div');
+    colWrap.className = 'column';
+    const label = document.createElement('div');
+    label.className = 'column-label';
+    label.textContent = 'Col ' + (i + 1);
+    colWrap.appendChild(label);
+
+    if (col.length === 0) {
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.textContent = '';
+      slot.addEventListener('click', () => onEmptyColumnClick(i));
+      colWrap.appendChild(slot);
+    } else {
+      const stack = document.createElement('div');
+      stack.className = 'col-cards';
+      col.forEach((card, j) => {
+        const isTop = j === col.length - 1;
+        const el = cardEl(card, isTop);
+        stack.appendChild(el);
+      });
+      colWrap.appendChild(stack);
+    }
+    tEl.appendChild(colWrap);
+  });
+
+  if (state.won) {
+    setMsg('🎉 Marée complète ! Tu as gagné !');
+  }
+}
+
+document.getElementById('newGameBtn').addEventListener('click', newGame);
+document.getElementById('undoBtn').addEventListener('click', undoMove);
+
+newGame();
+</script>
+</body>
+</html>
