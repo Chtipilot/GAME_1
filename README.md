@@ -89,7 +89,7 @@ Clôturez **75 %** de l'écran. Quittez la bordure en traçant une ligne dans la
 | `sw.js` | Garde le jeu en mémoire pour jouer sans Internet |
 | `icons/` | Icônes de l'application (Android, iPhone, ordinateur) |
 
-Après une modification du jeu, changez la ligne `const VERSION = 'qix-v3';` dans `sw.js` (par exemple `qix-v4`). Les téléphones où le jeu est installé récupèrent ainsi la nouvelle version.
+Après une modification du jeu, changez la ligne `const VERSION = 'qix-v4';` dans `sw.js` (par exemple `qix-v5`). Les téléphones où le jeu est installé récupèrent ainsi la nouvelle version.
 
 ## Activer GitHub Pages
 
