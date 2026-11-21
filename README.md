@@ -1,13 +1,38 @@
 # QIX Arcade
 
-Un remake du jeu d'arcade **Qix** (1981), jouable dans le navigateur et présenté dans une borne d'arcade dessinée en HTML/CSS.
+Un remake du jeu d'arcade **Qix** (1981), jouable dans le navigateur et présenté dans une borne d'arcade rétro.
 
-Le jeu tient dans un seul fichier, `index.html`. Il n'a besoin d'aucune installation ni d'aucune bibliothèque.
+Il marche sur **ordinateur, téléphone et tablette**, et s'installe comme une application.
 
 ## Jouer
 
-- **En ligne :** activez GitHub Pages sur ce dépôt (voir plus bas), puis ouvrez `https://<votre-nom>.github.io/<nom-du-depot>/`.
+- **En ligne :** <https://chtipilot.github.io/GAME_1/>. GitHub Pages doit être activé, voir plus bas.
 - **Sur votre ordinateur :** téléchargez `index.html` et ouvrez-le dans un navigateur.
+
+## Sur téléphone et tablette
+
+Sur un écran tactile, la borne se transforme en console plein écran, sans défilement :
+
+- **Portrait :** l'écran de jeu est en haut, le joystick et les boutons en dessous.
+- **Paysage :** le joystick est à gauche, l'écran au centre et les boutons à droite.
+
+Pour vous déplacer, deux façons au choix :
+
+- **Le joystick rouge :** posez le doigt dessus et glissez dans la direction voulue.
+- **Toucher l'écran de jeu :** le losange se dirige vers votre doigt. Gardez le doigt posé pour avancer, et glissez pour changer de direction.
+
+Autres comportements :
+
+- La partie se met en pause toute seule si vous quittez l'application ou recevez un appel.
+- L'écran reste allumé pendant la partie, sur les appareils qui le permettent.
+- Le téléphone vibre quand vous perdez une vie ou piégez une étincelle, sur Android et quand le son est activé.
+
+### Installer l'application
+
+Une fois installé, le jeu s'ouvre en plein écran depuis son icône et marche **sans Internet**.
+
+- **Android (Chrome) :** sur l'écran d'accueil du jeu, touchez **INSTALLER L'APPLI**, ou passez par le menu ⋮ → **Installer l'application**.
+- **iPhone / iPad (Safari) :** touchez **Partager** puis **Sur l'écran d'accueil**.
 
 ## But du jeu
 
@@ -19,24 +44,22 @@ Clôturez **75 %** de l'écran. Quittez la bordure en traçant une ligne dans la
 
 ## Commandes
 
-| Action | Clavier | Borne |
+| Action | Clavier | Borne / écran tactile |
 |---|---|---|
-| Se déplacer et tracer | Flèches (ou ZQSD / WASD) | Joystick rouge |
+| Se déplacer et tracer | Flèches (ou ZQSD / WASD) | Joystick rouge, ou doigt sur l'écran de jeu |
 | Tracé rapide | Espace | Bouton A (rouge) |
-| Tracé lent, points ×2 | Maj (maintenu) | Bouton B (jaune) |
+| Tracé lent, points ×2 | Maj (maintenu) | Bouton B (jaune), maintenu |
 | Start | Entrée | START |
 | Pause | P | PAUSE |
 | Son | M | SON |
-| Plein écran | F | ÉCRAN |
-| Difficulté (accueil) | 1 à 5 | — |
-
-Sur téléphone, le joystick et les boutons de la borne marchent au doigt.
+| Plein écran | F | ÉCRAN (absent sur iPhone) |
+| Difficulté (accueil) | 1 à 5 | Boutons de difficulté |
 
 ## Fonctionnalités
 
 - **5 difficultés :** Débutant (sans mèche, 5 vies), Facile, Normal, Difficile, Expert.
 - **1 ou 2 joueurs** chacun son tour, avec leurs noms. Les joueurs changent à chaque vie perdue, et chacun garde son propre écran.
-- **10 meilleurs scores** enregistrés dans le navigateur, avec nom, score, niveau, difficulté et date.
+- **10 meilleurs scores** enregistrés sur l'appareil, avec nom, score, niveau, difficulté et date.
 - **Étincelles piégeables :** refermez une zone autour d'une étincelle pour la détruire. Elle rapporte 1 000 points × le niveau et revient 12 secondes plus tard.
 - **Division des Qix :** dès le niveau 3, deux Qix apparaissent. Séparez-les dans deux zones pour terminer le niveau avec un gros bonus.
 - **Sons rétro** générés par le navigateur (Web Audio), sans fichier audio.
@@ -51,16 +74,25 @@ Sur téléphone, le joystick et les boutons de la borne marchent au doigt.
 | Niveau réussi | 500 × niveau + 1 000 par point de % au-delà de 75 % |
 | Qix séparés | 10 000 × niveau + 100 par % clôturé |
 
-## Publier avec GitHub Pages
+## Fichiers
 
-1. Créez un dépôt sur GitHub, par exemple `qix-arcade`.
-2. Déposez-y les fichiers `index.html` et `README.md` (bouton **Add file → Upload files**).
-3. Ouvrez **Settings → Pages**.
-4. Sous **Build and deployment**, choisissez **Deploy from a branch**, puis la branche `main` et le dossier `/ (root)`. Cliquez sur **Save**.
-5. Au bout d'une minute ou deux, le jeu est en ligne à l'adresse affichée en haut de la page.
+| Fichier | Rôle |
+|---|---|
+| `index.html` | Le jeu complet |
+| `manifest.webmanifest` | Nom, icônes et couleurs de l'application installée |
+| `sw.js` | Garde le jeu en mémoire pour jouer sans Internet |
+| `icons/` | Icônes de l'application (Android, iPhone, ordinateur) |
+
+Après une modification du jeu, changez la ligne `const VERSION = 'qix-v2';` dans `sw.js` (par exemple `qix-v3`). Les téléphones où le jeu est installé récupèrent ainsi la nouvelle version.
+
+## Activer GitHub Pages
+
+1. Sur GitHub, ouvrez ce dépôt puis **Settings → Pages**.
+2. Sous **Build and deployment**, choisissez **Deploy from a branch**, puis la branche `main` et le dossier `/ (root)`. Cliquez sur **Save**.
+3. Au bout d'une à deux minutes, le jeu est en ligne à l'adresse affichée en haut de la page.
 
 ## Remarques
 
-- Les records et les noms restent dans le navigateur de chaque joueur (`localStorage`). Ils ne sont pas partagés entre appareils.
-- Les polices viennent de Google Fonts. Sans connexion Internet, le jeu fonctionne avec des polices de remplacement.
+- Les records et les noms restent sur l'appareil où l'on joue (`localStorage`). Ils ne sont pas partagés entre appareils.
+- Les polices viennent de Google Fonts. Après la première visite, elles sont gardées en mémoire pour jouer hors ligne.
 - Qix est une marque de son éditeur d'origine. Ce projet est un hommage amateur, sans lien avec lui.

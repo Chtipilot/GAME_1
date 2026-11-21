@@ -1,0 +1,19 @@
+{
+  "name": "QIX Arcade",
+  "short_name": "QIX",
+  "description": "Le jeu d'arcade Qix dans une borne rétro : 1 ou 2 joueurs, 5 difficultés, records.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#07081a",
+  "theme_color": "#07081a",
+  "categories": ["games"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
