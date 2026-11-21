@@ -1,6 +1,6 @@
 // QIX Arcade — offline cache.
 // Change VERSION after each update of the game so phones pick up the new files.
-const VERSION = 'qix-v2';
+const VERSION = 'qix-v3';
 const CORE = [
   './',
   'index.html',

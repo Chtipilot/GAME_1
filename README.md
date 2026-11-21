@@ -4,6 +4,12 @@ Un remake du jeu d'arcade **Qix** (1981), jouable dans le navigateur et présent
 
 Il marche sur **ordinateur, téléphone et tablette**, et s'installe comme une application.
 
+**4 langues :** français, English, Deutsch, ไทย. On choisit la langue avec les boutons **FR · EN · DE · ไทย** en haut de l'écran d'accueil. Au premier lancement, le jeu prend la langue du téléphone ou du navigateur, puis il retient le choix.
+
+> 🇬🇧 Arcade remake of Qix (1981) in a retro cabinet. Pick your language on the title screen.
+> 🇩🇪 Arcade-Remake von Qix (1981) im Retro-Automaten. Sprache auf dem Startbildschirm wählen.
+> 🇹🇭 เกม Qix (1981) แบบตู้อาร์เคดย้อนยุค เลือกภาษาได้ที่หน้าจอเริ่มต้น
+
 ## Jouer
 
 - **En ligne :** <https://chtipilot.github.io/GAME_1/>. GitHub Pages doit être activé, voir plus bas.
@@ -83,7 +89,7 @@ Clôturez **75 %** de l'écran. Quittez la bordure en traçant une ligne dans la
 | `sw.js` | Garde le jeu en mémoire pour jouer sans Internet |
 | `icons/` | Icônes de l'application (Android, iPhone, ordinateur) |
 
-Après une modification du jeu, changez la ligne `const VERSION = 'qix-v2';` dans `sw.js` (par exemple `qix-v3`). Les téléphones où le jeu est installé récupèrent ainsi la nouvelle version.
+Après une modification du jeu, changez la ligne `const VERSION = 'qix-v3';` dans `sw.js` (par exemple `qix-v4`). Les téléphones où le jeu est installé récupèrent ainsi la nouvelle version.
 
 ## Activer GitHub Pages
 

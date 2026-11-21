@@ -19,16 +19,16 @@
   if(m('(pointer:coarse)')||m('(display-mode:standalone)')||m('(display-mode:fullscreen)'))document.documentElement.classList.add('app');})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Monoton&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Monoton&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+Thai:wght@400;700&display=swap">
 <style>
 /* Layout: an upright arcade cabinet — lit marquee, black bezel with ring lights, slanted control panel (joystick + buttons), lower cabinet with coin door. Red side panels frame the whole thing. Single dark-room look by choice. */
 :root{
   --room:#07081a; --panel:#10132e; --line:#2a2f63; --ink:#e9ecff; --dim:#8b91c9;
   --red:#d3161e; --red2:#8c0c12; --black:#0d0d12; --black2:#18181f;
   --hot:#ff3d6e; --spark:#ffe45c; --sun1:#ff2e88; --sun2:#ff9a2e;
-  --display:"Silkscreen","Courier New",monospace;
+  --display:"Silkscreen","Noto Sans Thai","Courier New",monospace;
   --neon:"Monoton","Silkscreen",cursive;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono","Noto Sans Thai",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:dark;
 }
 [hidden]{display:none!important}
@@ -250,6 +250,10 @@ html.app button,html.app input{touch-action:manipulation}
   html.app .hud strong{font-size:13px}
 }
 .overlay:not(.menu) .install{display:none}
+.langs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.langs button{background:none;color:var(--dim);border:2px solid var(--line);font-size:11px;padding:4px 8px;min-width:44px}
+.langs button:hover{color:#fff;border-color:#fff}
+.langs button[aria-pressed="true"]{color:var(--room);background:#fff;border-color:#fff}
 .install{font-size:11px;color:var(--ink);line-height:1.5;max-width:40ch}
 .install button{background:var(--panel);color:#fff;border:2px solid #fff;font-size:12px;padding:6px 12px;box-shadow:0 4px 0 var(--line)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -266,11 +270,11 @@ html.app button,html.app input{touch-action:manipulation}
         <span class="ring"></span>
       </div>
       <div class="hud">
-        <div><span id="hScoreL">Score</span><strong id="hScore">0</strong></div>
-        <div><span>Territoire</span><strong id="hPct">0 %</strong></div>
-        <div><span>Difficulté</span><strong id="hDiff">Normal</strong></div>
-        <div><span>Vies</span><strong id="hLives">♦♦♦</strong></div>
-        <div><span>Niveau</span><strong id="hLevel">1</strong></div>
+        <div><span id="hScoreL" data-i18n="score">Score</span><strong id="hScore">0</strong></div>
+        <div><span data-i18n="terr">Territoire</span><strong id="hPct">0 %</strong></div>
+        <div><span data-i18n="diff">Difficulté</span><strong id="hDiff">Normal</strong></div>
+        <div><span data-i18n="lives">Vies</span><strong id="hLives">♦♦♦</strong></div>
+        <div><span data-i18n="level">Niveau</span><strong id="hLevel">1</strong></div>
       </div>
       <div class="meter"><i id="mFill"></i><em></em></div>
       <div class="scorebar">
@@ -285,23 +289,24 @@ html.app button,html.app input{touch-action:manipulation}
           <p id="ovP">Clôturez 75 % de l'écran. Poussez le joystick vers la zone noire pour quitter la bordure et tracer, puis revenez sur une bordure pour refermer. Évitez le Qix quand il frôle votre tracé, et les étincelles qui longent les bords.</p>
           <div class="hiwrap" id="hiBox" hidden><table id="hiTable"></table></div>
           <div class="diffbox" id="diffBox">
+            <div class="langs" id="langSel" role="group" aria-label="Langue"></div>
             <div class="diff" id="pSel">
-              <button type="button" data-n="1">1 JOUEUR</button>
-              <button type="button" data-n="2">2 JOUEURS</button>
+              <button type="button" data-n="1" data-i18n="p1">1 JOUEUR</button>
+              <button type="button" data-n="2" data-i18n="p2">2 JOUEURS</button>
             </div>
             <div class="names">
-              <label for="n1">J1 <input id="n1" maxlength="10" autocomplete="off" spellcheck="false" placeholder="NOM"></label>
-              <label for="n2" id="n2wrap">J2 <input id="n2" maxlength="10" autocomplete="off" spellcheck="false" placeholder="NOM"></label>
+              <label for="n1"><span data-i18n="j1">J1</span> <input id="n1" maxlength="10" autocomplete="off" spellcheck="false" placeholder="NOM" data-i18n-ph="namePh"></label>
+              <label for="n2" id="n2wrap"><span data-i18n="j2">J2</span> <input id="n2" maxlength="10" autocomplete="off" spellcheck="false" placeholder="NOM" data-i18n-ph="namePh"></label>
             </div>
-            <span>Choisir la difficulté (touches 1 à 5)</span>
+            <span data-i18n="chooseDiff">Choisir la difficulté (touches 1 à 5)</span>
             <div class="diff" id="diff"></div>
             <div id="diffInfo"></div>
           </div>
           <button id="ovB">JOUER</button>
-          <button class="link" id="hiLink" type="button">VOIR LES RECORDS</button>
+          <button class="link" id="hiLink" type="button" data-i18n="seeRecords">VOIR LES RECORDS</button>
           <div class="install" id="installBox" hidden>
-            <button type="button" id="installBtn" hidden>INSTALLER L'APPLI</button>
-            <span id="iosHint" hidden>Pour l'installer : touchez <b>Partager</b> puis <b>Sur l'écran d'accueil</b>.</span>
+            <button type="button" id="installBtn" hidden data-i18n="install">INSTALLER L'APPLI</button>
+            <span id="iosHint" hidden data-i18n-html="iosHint">Pour l'installer : touchez <b>Partager</b> puis <b>Sur l'écran d'accueil</b>.</span>
           </div>
         </div>
       </div>
@@ -321,18 +326,18 @@ html.app button,html.app input{touch-action:manipulation}
         </svg>
         <div class="stickbox">
           <div class="stick" id="stick" data-dir="" aria-label="Joystick"><span class="shaft"></span><span class="ball"></span></div>
-          <div class="ctl-label">JOYSTICK</div>
+          <div class="ctl-label" data-i18n="joystick">JOYSTICK</div>
         </div>
         <div class="btns">
           <div class="row">
-            <div class="bt"><button class="big yel" id="bSlow" aria-label="Tracé lent">B</button><span class="ctl-label">LENT ×2</span></div>
-            <div class="bt"><button class="big red" id="bFast" aria-label="Tracé rapide">A</button><span class="ctl-label">RAPIDE</span></div>
+            <div class="bt"><button class="big yel" id="bSlow" aria-label="Tracé lent">B</button><span class="ctl-label" data-i18n="slow">LENT ×2</span></div>
+            <div class="bt"><button class="big red" id="bFast" aria-label="Tracé rapide">A</button><span class="ctl-label" data-i18n="fast">RAPIDE</span></div>
           </div>
           <div class="row">
             <div class="bt"><button class="small" id="bSnd" aria-label="Son"></button><span class="ctl-label" id="bSndL">SON ♪</span></div>
             <div class="bt"><button class="small" id="bFs" aria-label="Plein écran"></button><span class="ctl-label" id="bFsL">ÉCRAN</span></div>
-            <div class="bt"><button class="small" id="bPause" aria-label="Pause"></button><span class="ctl-label">PAUSE</span></div>
-            <div class="bt"><button class="small" id="bStart" aria-label="Start"></button><span class="ctl-label">START</span></div>
+            <div class="bt"><button class="small" id="bPause" aria-label="Pause"></button><span class="ctl-label" data-i18n="pause">PAUSE</span></div>
+            <div class="bt"><button class="small" id="bStart" aria-label="Start"></button><span class="ctl-label" data-i18n="start">START</span></div>
           </div>
         </div>
       </div>
@@ -348,7 +353,7 @@ html.app button,html.app input{touch-action:manipulation}
     <div class="kick"></div>
   </div>
 
-  <div class="keys">Clavier : <b>Flèches</b> joystick · maintenir <b>Maj</b> tracé lent (×2) · <b>Entrée</b> start · <b>P</b> pause · <b>M</b> son · <b>F</b> plein écran</div>
+  <div class="keys" data-i18n-html="keys">Clavier : <b>Flèches</b> joystick · maintenir <b>Maj</b> tracé lent (×2) · <b>Entrée</b> start · <b>P</b> pause · <b>M</b> son · <b>F</b> plein écran</div>
 </div>
 
 <script>
@@ -358,6 +363,115 @@ const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 const off=document.createElement('canvas');off.width=W;off.height=H;
 const octx=off.getContext('2d'),img=octx.createImageData(W,H),px32=new Uint32Array(img.data.buffer);
 const $=id=>document.getElementById(id);
+
+// ---------- languages: Français, English, Deutsch, ไทย ----------
+const LANGS={fr:'FR',en:'EN',de:'DE',th:'ไทย'};
+const LOCALES={fr:'fr-FR',en:'en-GB',de:'de-DE',th:'th-TH'};
+const I18N={
+fr:{
+  score:'Score',terr:'Territoire',diff:'Difficulté',lives:'Vies',level:'Niveau',record:'RECORD',recordBy:'RECORD {name}',
+  p1:'1 JOUEUR',p2:'2 JOUEURS',j1:'J1',j2:'J2',namePh:'NOM',playerN:'JOUEUR {n}',
+  chooseDiff:'Choisir la difficulté (touches 1 à 5)',play:'JOUER',seeRecords:'VOIR LES RECORDS',install:"INSTALLER L'APPLI",
+  iosHint:"Pour l'installer : touchez <b>Partager</b> puis <b>Sur l'écran d'accueil</b>.",
+  joystick:'JOYSTICK',slow:'LENT ×2',fast:'RAPIDE',sound:'SON ♪',mute:'MUET',screen:'ÉCRAN',quit:'QUITTER',pause:'PAUSE',start:'START',
+  keys:'Clavier : <b>Flèches</b> joystick · maintenir <b>Maj</b> tracé lent (×2) · <b>Entrée</b> start · <b>P</b> pause · <b>M</b> son · <b>F</b> plein écran',
+  intro:"Clôturez 75 % de l'écran. Poussez le joystick vers la zone noire pour tracer, puis revenez sur une bordure pour refermer. Évitez le Qix et les étincelles, ou piégez une étincelle dans une zone refermée pour la détruire.",
+  turnFirst:'À vous de jouer ! Les joueurs se relaient à chaque vie perdue.',go:'GO',
+  yourTurn1:'À vous de jouer ! Il vous reste 1 vie.',yourTurnN:'À vous de jouer ! Il vous reste {n} vies.',outOfLives:"({name} n'a plus de vie)",
+  tie:'Égalité !',wins:'{name} gagne !',newRecord:'Nouveau record enregistré !',gameOver:'Partie terminée',menu:'MENU',
+  over1:'{name} : {score} points · niveau {level}.',
+  splitBoom:'QIX SÉPARÉS',splitTitle:'Qix séparés !',splitText:"Vous avez coupé l'écran en deux : niveau {level} terminé avec {pct} %. Bonus de division {bonus} points.",
+  next:'Niveau suivant',levelDone:'Niveau {level} réussi',levelText:'{pct} % clôturé · bonus {bonus} points.',
+  trapped:'ÉTINCELLE PIÉGÉE',noRecords:'Aucun record pour l’instant. À vous de jouer !',
+  thName:'Nom',thScore:'Score',thLvl:'Niv.',thDate:'Date',recordsTitle:'Records',back:'RETOUR',
+  pauseTitle:'Pause',pauseText:'Appuyez sur START, P ou Entrée pour reprendre.',resume:'Reprendre',lang:'Langue',
+  dname0:'Débutant',dname1:'Facile',dname2:'Normal',dname3:'Difficile',dname4:'Expert',
+  dinfo0:'Pas de mèche · Qix lent · 1 étincelle · 5 vies',dinfo1:'Mèche lente · Qix tranquille · 1 étincelle · 4 vies',
+  dinfo2:'Mèche normale · 2 étincelles · 3 vies',dinfo3:'Mèche rapide · Qix vif · 3 étincelles · 3 vies',dinfo4:'Mèche immédiate · Qix féroce · 4 étincelles · 2 vies'},
+en:{
+  score:'Score',terr:'Territory',diff:'Difficulty',lives:'Lives',level:'Level',record:'BEST',recordBy:'BEST {name}',
+  p1:'1 PLAYER',p2:'2 PLAYERS',j1:'P1',j2:'P2',namePh:'NAME',playerN:'PLAYER {n}',
+  chooseDiff:'Choose the difficulty (keys 1 to 5)',play:'PLAY',seeRecords:'SEE HIGH SCORES',install:'INSTALL THE APP',
+  iosHint:'To install it: tap <b>Share</b>, then <b>Add to Home Screen</b>.',
+  joystick:'JOYSTICK',slow:'SLOW ×2',fast:'FAST',sound:'SOUND ♪',mute:'MUTED',screen:'SCREEN',quit:'EXIT',pause:'PAUSE',start:'START',
+  keys:'Keyboard: <b>Arrows</b> joystick · hold <b>Shift</b> for slow drawing (×2) · <b>Enter</b> start · <b>P</b> pause · <b>M</b> sound · <b>F</b> full screen',
+  intro:'Claim 75% of the screen. Push the joystick into the black area to draw, then return to a border to close the shape. Avoid the Qix and the sparks, or trap a spark inside a closed area to destroy it.',
+  turnFirst:'Your turn! Players swap each time a life is lost.',go:'GO',
+  yourTurn1:'Your turn! You have 1 life left.',yourTurnN:'Your turn! You have {n} lives left.',outOfLives:'({name} has no lives left)',
+  tie:"It's a tie!",wins:'{name} wins!',newRecord:'New high score saved!',gameOver:'Game over',menu:'MENU',
+  over1:'{name}: {score} points · level {level}.',
+  splitBoom:'QIX SPLIT',splitTitle:'Qix split!',splitText:'You cut the screen in two: level {level} complete at {pct}%. Split bonus: {bonus} points.',
+  next:'Next level',levelDone:'Level {level} complete',levelText:'{pct}% claimed · bonus {bonus} points.',
+  trapped:'SPARK TRAPPED',noRecords:'No high scores yet. Your turn to play!',
+  thName:'Name',thScore:'Score',thLvl:'Lvl',thDate:'Date',recordsTitle:'High scores',back:'BACK',
+  pauseTitle:'Paused',pauseText:'Press START, P or Enter to resume.',resume:'Resume',lang:'Language',
+  dname0:'Beginner',dname1:'Easy',dname2:'Normal',dname3:'Hard',dname4:'Expert',
+  dinfo0:'No fuse · slow Qix · 1 spark · 5 lives',dinfo1:'Slow fuse · calm Qix · 1 spark · 4 lives',
+  dinfo2:'Normal fuse · 2 sparks · 3 lives',dinfo3:'Fast fuse · quick Qix · 3 sparks · 3 lives',dinfo4:'Instant fuse · fierce Qix · 4 sparks · 2 lives'},
+de:{
+  score:'Punkte',terr:'Gebiet',diff:'Schwierigkeit',lives:'Leben',level:'Level',record:'REKORD',recordBy:'REKORD {name}',
+  p1:'1 SPIELER',p2:'2 SPIELER',j1:'S1',j2:'S2',namePh:'NAME',playerN:'SPIELER {n}',
+  chooseDiff:'Schwierigkeit wählen (Tasten 1 bis 5)',play:'SPIELEN',seeRecords:'REKORDE ANSEHEN',install:'APP INSTALLIEREN',
+  iosHint:'Zum Installieren: <b>Teilen</b> antippen, dann <b>Zum Home-Bildschirm</b>.',
+  joystick:'JOYSTICK',slow:'LANGSAM ×2',fast:'SCHNELL',sound:'TON ♪',mute:'STUMM',screen:'VOLLBILD',quit:'BEENDEN',pause:'PAUSE',start:'START',
+  keys:'Tastatur: <b>Pfeiltasten</b> Joystick · <b>Umschalt</b> halten: langsam zeichnen (×2) · <b>Enter</b> Start · <b>P</b> Pause · <b>M</b> Ton · <b>F</b> Vollbild',
+  intro:'Erobere 75 % des Bildschirms. Drücke den Joystick in die schwarze Fläche, um zu zeichnen, und kehre dann zu einem Rand zurück, um die Form zu schließen. Weiche dem Qix und den Funken aus oder schließe einen Funken in einer Fläche ein, um ihn zu zerstören.',
+  turnFirst:'Du bist dran! Nach jedem verlorenen Leben ist der andere Spieler dran.',go:'LOS',
+  yourTurn1:'Du bist dran! Du hast noch 1 Leben.',yourTurnN:'Du bist dran! Du hast noch {n} Leben.',outOfLives:'({name} hat keine Leben mehr)',
+  tie:'Unentschieden!',wins:'{name} gewinnt!',newRecord:'Neuer Rekord gespeichert!',gameOver:'Spiel vorbei',menu:'MENÜ',
+  over1:'{name}: {score} Punkte · Level {level}.',
+  splitBoom:'QIX GETRENNT',splitTitle:'Qix getrennt!',splitText:'Du hast den Bildschirm geteilt: Level {level} geschafft mit {pct} %. Trennungsbonus: {bonus} Punkte.',
+  next:'Nächstes Level',levelDone:'Level {level} geschafft',levelText:'{pct} % erobert · Bonus {bonus} Punkte.',
+  trapped:'FUNKE GEFANGEN',noRecords:'Noch keine Rekorde. Du bist dran!',
+  thName:'Name',thScore:'Punkte',thLvl:'Lvl',thDate:'Datum',recordsTitle:'Rekorde',back:'ZURÜCK',
+  pauseTitle:'Pause',pauseText:'Drücke START, P oder Enter, um weiterzuspielen.',resume:'Weiter',lang:'Sprache',
+  dname0:'Anfänger',dname1:'Leicht',dname2:'Normal',dname3:'Schwer',dname4:'Experte',
+  dinfo0:'Keine Lunte · langsamer Qix · 1 Funke · 5 Leben',dinfo1:'Langsame Lunte · ruhiger Qix · 1 Funke · 4 Leben',
+  dinfo2:'Normale Lunte · 2 Funken · 3 Leben',dinfo3:'Schnelle Lunte · flinker Qix · 3 Funken · 3 Leben',dinfo4:'Sofortige Lunte · wilder Qix · 4 Funken · 2 Leben'},
+th:{
+  score:'คะแนน',terr:'พื้นที่',diff:'ระดับความยาก',lives:'ชีวิต',level:'ด่าน',record:'สถิติ',recordBy:'สถิติ {name}',
+  p1:'1 ผู้เล่น',p2:'2 ผู้เล่น',j1:'P1',j2:'P2',namePh:'ชื่อ',playerN:'ผู้เล่น {n}',
+  chooseDiff:'เลือกระดับความยาก (ปุ่ม 1 ถึง 5)',play:'เล่น',seeRecords:'ดูสถิติ',install:'ติดตั้งแอป',
+  iosHint:'วิธีติดตั้ง: แตะ <b>แชร์</b> แล้วเลือก <b>เพิ่มไปยังหน้าจอโฮม</b>',
+  joystick:'จอยสติ๊ก',slow:'ช้า ×2',fast:'เร็ว',sound:'เสียง ♪',mute:'ปิดเสียง',screen:'เต็มจอ',quit:'ออก',pause:'หยุด',start:'เริ่ม',
+  keys:'แป้นพิมพ์: <b>ลูกศร</b> จอยสติ๊ก · กด <b>Shift</b> ค้างไว้ ลากเส้นช้า (×2) · <b>Enter</b> เริ่ม · <b>P</b> หยุด · <b>M</b> เสียง · <b>F</b> เต็มจอ',
+  intro:'ล้อมพื้นที่ให้ได้ 75% ของจอ ดันจอยสติ๊กเข้าไปในพื้นที่สีดำเพื่อลากเส้น แล้วกลับมาที่ขอบเพื่อปิดพื้นที่ หลบ Qix และประกายไฟ หรือขังประกายไฟไว้ในพื้นที่ที่ปิดเพื่อทำลายมัน',
+  turnFirst:'ถึงตาคุณแล้ว! ผู้เล่นจะสลับกันทุกครั้งที่เสียชีวิต',go:'ไป!',
+  yourTurn1:'ถึงตาคุณแล้ว! เหลือ 1 ชีวิต',yourTurnN:'ถึงตาคุณแล้ว! เหลือ {n} ชีวิต',outOfLives:'({name} หมดชีวิตแล้ว)',
+  tie:'เสมอ!',wins:'{name} ชนะ!',newRecord:'บันทึกสถิติใหม่แล้ว!',gameOver:'จบเกม',menu:'เมนู',
+  over1:'{name}: {score} คะแนน · ด่าน {level}',
+  splitBoom:'แยก QIX แล้ว',splitTitle:'แยก Qix สำเร็จ!',splitText:'คุณแบ่งจอออกเป็นสองส่วน: ผ่านด่าน {level} ด้วยพื้นที่ {pct}% โบนัสการแยก {bonus} คะแนน',
+  next:'ด่านต่อไป',levelDone:'ผ่านด่าน {level}',levelText:'ล้อมได้ {pct}% · โบนัส {bonus} คะแนน',
+  trapped:'จับประกายไฟได้!',noRecords:'ยังไม่มีสถิติ มาเล่นกันเลย!',
+  thName:'ชื่อ',thScore:'คะแนน',thLvl:'ด่าน',thDate:'วันที่',recordsTitle:'สถิติสูงสุด',back:'กลับ',
+  pauseTitle:'หยุดชั่วคราว',pauseText:'กด เริ่ม, P หรือ Enter เพื่อเล่นต่อ',resume:'เล่นต่อ',lang:'ภาษา',
+  dname0:'มือใหม่',dname1:'ง่าย',dname2:'ปกติ',dname3:'ยาก',dname4:'ผู้เชี่ยวชาญ',
+  dinfo0:'ไม่มีชนวน · Qix ช้า · ประกายไฟ 1 ดวง · 5 ชีวิต',dinfo1:'ชนวนช้า · Qix สบายๆ · ประกายไฟ 1 ดวง · 4 ชีวิต',
+  dinfo2:'ชนวนปกติ · ประกายไฟ 2 ดวง · 3 ชีวิต',dinfo3:'ชนวนเร็ว · Qix ว่องไว · ประกายไฟ 3 ดวง · 3 ชีวิต',dinfo4:'ชนวนทันที · Qix ดุร้าย · ประกายไฟ 4 ดวง · 2 ชีวิต'}
+};
+let lang=(()=>{try{const v=localStorage.getItem('qixLang');if(I18N[v])return v}catch(e){}
+  const n=(navigator.language||'fr').slice(0,2).toLowerCase();return I18N[n]?n:'fr'})();
+const LOC=()=>LOCALES[lang];
+function T(k,vars){let s=(I18N[lang][k]??I18N.fr[k]??k);if(vars)for(const v in vars)s=s.split('{'+v+'}').join(vars[v]);return s}
+const fmtPct=p=>p.toLocaleString(LOC(),{minimumFractionDigits:1,maximumFractionDigits:1});
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
+  document.querySelectorAll('#diff button').forEach(b=>{b.textContent=T('dname'+b.dataset.d).toUpperCase()});
+  document.querySelectorAll('#langSel button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang));
+  $('langSel').setAttribute('aria-label',T('lang'));
+  if(typeof diffIdx==='number')$('diffInfo').textContent=T('dinfo'+diffIdx);
+  sndLabel();$('bFsL').textContent=document.fullscreenElement?T('quit'):T('screen');
+}
+function buildLangSel(){
+  for(const [code,label] of Object.entries(LANGS)){
+    const b=document.createElement('button');b.type='button';b.dataset.lang=code;b.textContent=label;b.lang=code;
+    b.addEventListener('click',()=>{readNames();lang=code;try{localStorage.setItem('qixLang',code)}catch(e){}applyLang();hud();goTitle()});
+    $('langSel').appendChild(b);
+  }
+}
 
 // ---------- sound (Web Audio, all synthesized) ----------
 const sfx=(()=>{
@@ -416,20 +530,20 @@ const SPLIT_LEVEL=3;
 let grid,kind,player,drawing,slowDraw,trail,trailStart,qixes=[],sparx,score=0,lives=3,level=1,pct=0;
 let state='title',pAcc=0,still=0,fuse=0,flash=0,t=0;
 // players: each keeps its own board between turns
-let players=[],cur=0,nP=1,names=['JOUEUR 1','JOUEUR 2'],newIds=[];
+let players=[],cur=0,nP=1,names=['',''],newIds=[];
 // trapped sparks: spawnQ holds seconds until each destroyed spark comes back; booms are the explosion effects
 const RESPAWN=12;let spawnQ=[],booms=[];
 try{const v=+localStorage.getItem('qixPlayers');if(v===1||v===2)nP=v}catch(e){}
-try{const v=JSON.parse(localStorage.getItem('qixNames')||'null');if(Array.isArray(v)&&v.length===2)names=v.map(s=>String(s).slice(0,10))}catch(e){}
+try{const v=JSON.parse(localStorage.getItem('qixNames')||'null');if(Array.isArray(v)&&v.length===2)names=v.map(s=>/^JOUEUR \d$/.test(s)?'':String(s).slice(0,10))}catch(e){}
 function loadHi(){try{const v=JSON.parse(localStorage.getItem('qixHi')||'[]');return Array.isArray(v)?v.filter(h=>h&&typeof h.score==='number'):[]}catch(e){return[]}}
 function saveHi(hi){try{localStorage.setItem('qixHi',JSON.stringify(hi))}catch(e){}}
 // fuse: seconds of stillness before the spark starts burning the trail (null = never)
 const DIFFS=[
-  {name:'Débutant',fuse:null,qix:20,qixInc:3,sparx:1,spx:14,lives:5,info:'Pas de mèche · Qix lent · 1 étincelle · 5 vies'},
-  {name:'Facile',fuse:1.6,qix:28,qixInc:4,sparx:1,spx:20,lives:4,info:'Mèche lente · Qix tranquille · 1 étincelle · 4 vies'},
-  {name:'Normal',fuse:0.8,qix:38,qixInc:5,sparx:2,spx:26,lives:3,info:'Mèche normale · 2 étincelles · 3 vies'},
-  {name:'Difficile',fuse:0.5,qix:50,qixInc:6,sparx:3,spx:32,lives:3,info:'Mèche rapide · Qix vif · 3 étincelles · 3 vies'},
-  {name:'Expert',fuse:0.3,qix:62,qixInc:7,sparx:4,spx:38,lives:2,info:'Mèche immédiate · Qix féroce · 4 étincelles · 2 vies'}];
+  {id:0,fuse:null,qix:20,qixInc:3,sparx:1,spx:14,lives:5},
+  {id:1,fuse:1.6,qix:28,qixInc:4,sparx:1,spx:20,lives:4},
+  {id:2,fuse:0.8,qix:38,qixInc:5,sparx:2,spx:26,lives:3},
+  {id:3,fuse:0.5,qix:50,qixInc:6,sparx:3,spx:32,lives:3},
+  {id:4,fuse:0.3,qix:62,qixInc:7,sparx:4,spx:38,lives:2}];
 let diffIdx=0;try{const v=+localStorage.getItem('qixDiff');if(v>=0&&v<5)diffIdx=v}catch(e){}
 const DF=()=>DIFFS[diffIdx];
 const DIRS={right:[1,0],down:[0,1],left:[-1,0],up:[0,-1]},D4=[[1,0],[0,1],[-1,0],[0,-1]];
@@ -478,16 +592,16 @@ function snap(){return{score,lives,level,grid,kind,pct,qixes,sparx,spawnQ:[...sp
 function savePlayer(){players[cur]=snap()}
 function loadPlayer(i){({score,lives,level,grid,kind,pct,qixes,sparx,spawnQ}=players[i]);spawnQ=[...spawnQ];booms=[];player={...players[i].player};
   drawing=false;trail=[];fuse=0;still=0;pAcc=0;held.length=0;stickDir=null}
-const pName=i=>names[i]||`JOUEUR ${i+1}`;
+const pName=i=>names[i]||T('playerN',{n:i+1});
 function readNames(){
-  [0,1].forEach(i=>{const v=$('n'+(i+1)).value.trim().toUpperCase().slice(0,10);names[i]=v||`JOUEUR ${i+1}`});
+  [0,1].forEach(i=>{const v=$('n'+(i+1)).value.trim().toUpperCase().slice(0,10);names[i]=v});
   try{localStorage.setItem('qixNames',JSON.stringify(names))}catch(e){}
 }
 function startGame(){
   readNames();players=[];newIds=[];
   for(let i=0;i<nP;i++){level=1;score=0;lives=DF().lives;newLevel();players.push(snap())}
   cur=0;loadPlayer(0);hud();sfx.start();
-  if(nP>1){state='turn';showOv(pName(0),'À vous de jouer ! Les joueurs se relaient à chaque vie perdue.','GO')}
+  if(nP>1){state='turn';showOv(pName(0),T('turnFirst'),T('go'))}
   else{state='play';ov.hidden=true}
 }
 function nextPlayer(){
@@ -500,15 +614,15 @@ function gameOver(){
   savePlayer();state='over';sfx.over();
   const hi=loadHi();newIds=[];
   players.forEach((p,i)=>{if(p.score>0){const id=Date.now()+'-'+i;newIds.push(id);
-    hi.push({id,name:pName(i),score:p.score,level:p.level,diff:DF().name,date:new Date().toLocaleDateString('fr-FR')})}});
+    hi.push({id,name:pName(i),score:p.score,level:p.level,diffIdx,diff:T('dname'+diffIdx),date:new Date().toLocaleDateString(LOC())})}});
   hi.sort((a,b)=>b.score-a.score);hi.length=Math.min(hi.length,10);saveHi(hi);
   newIds=newIds.filter(id=>hi.some(h=>h.id===id));
   let txt;
-  if(nP===1)txt=`${pName(0)} : ${score.toLocaleString('fr-FR')} points · niveau ${level}.`;
-  else{const [a,b]=players;const w=a.score===b.score?'Égalité !':`${pName(a.score>b.score?0:1)} gagne !`;
-    txt=`${pName(0)} ${a.score.toLocaleString('fr-FR')} · ${pName(1)} ${b.score.toLocaleString('fr-FR')} — ${w}`}
-  if(newIds.length)txt+=' Nouveau record enregistré !';
-  hud();showOv('Partie terminée',txt,'MENU',{table:true});
+  if(nP===1)txt=T('over1',{name:pName(0),score:score.toLocaleString(LOC()),level});
+  else{const [a,b]=players;const w=a.score===b.score?T('tie'):T('wins',{name:pName(a.score>b.score?0:1)});
+    txt=`${pName(0)} ${a.score.toLocaleString(LOC())} · ${pName(1)} ${b.score.toLocaleString(LOC())} — ${w}`}
+  if(newIds.length)txt+=' '+T('newRecord');
+  hud();showOv(T('gameOver'),txt,T('menu'),{table:true});
 }
 
 // ---------- player ----------
@@ -563,18 +677,18 @@ function closeShape(){
   let caught=0;
   sparx=sparx.filter(s=>{if(isEdge(s.x,s.y))return true;
     caught++;const b=1000*level*caught;score+=b;spawnQ.push(RESPAWN);
-    booms.push({x:s.x,y:s.y,t0:t,txt:`+${b.toLocaleString('fr-FR')}`});return false});
+    booms.push({x:s.x,y:s.y,t0:t,txt:`+${b.toLocaleString(LOC())}`});return false});
   if(caught){sfx.trap();buzz([40,40,40])}
   hud();
   if(split){
     const bonus=10000*level+Math.round(pct*100);score+=bonus;state='clear';hud();sfx.trap();sfx.clear();
-    for(const qx of qixes)booms.push({x:qx.pts[0].x,y:qx.pts[0].y,t0:t,txt:'QIX SÉPARÉS'});
-    showOv(nP>1?`${pName(cur)} · Qix séparés !`:'Qix séparés !',`Vous avez coupé l'écran en deux : niveau ${level} terminé avec ${pct.toFixed(1)} %. Bonus de division ${bonus.toLocaleString('fr-FR')} points.`,'Niveau suivant');
+    for(const qx of qixes)booms.push({x:qx.pts[0].x,y:qx.pts[0].y,t0:t,txt:T('splitBoom')});
+    showOv(nP>1?`${pName(cur)} · ${T('splitTitle')}`:T('splitTitle'),T('splitText',{level,pct:fmtPct(pct),bonus:bonus.toLocaleString(LOC())}),T('next'));
     return;
   }
   if(pct>=TARGET){
     const bonus=Math.round((pct-TARGET)*1000)+level*500;score+=bonus;state='clear';hud();sfx.clear();
-    showOv(nP>1?`${pName(cur)} · niveau ${level} réussi`:`Niveau ${level} réussi`,`${pct.toFixed(1)} % clôturé · bonus ${bonus.toLocaleString('fr-FR')} points.`,'Niveau suivant');
+    showOv(nP>1?`${pName(cur)} · ${T('levelDone',{level})}`:T('levelDone',{level}),T('levelText',{pct:fmtPct(pct),bonus:bonus.toLocaleString(LOC())}),T('next'));
   }
 }
 function die(){
@@ -588,8 +702,8 @@ function die(){
   const nxt=nextPlayer();
   if(nxt<0){gameOver();return}
   if(nxt!==cur){cur=nxt;loadPlayer(cur);state='turn';hud();
-    const other=players[1-cur].lives>0?'':` (${pName(1-cur)} n'a plus de vie)`;
-    showOv(pName(cur),`À vous de jouer ! Il vous reste ${lives} vie${lives>1?'s':''}.${other}`,'GO')}
+    const other=players[1-cur].lives>0?'':' '+T('outOfLives',{name:pName(1-cur)});
+    showOv(pName(cur),T(lives>1?'yourTurnN':'yourTurn1',{n:lives})+other,T('go'))}
 }
 
 // ---------- qix ----------
@@ -692,10 +806,10 @@ function render(){
       ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,8+k*40,0,7);ctx.stroke();
       ctx.lineWidth=2;for(let j=0;j<12;j++){const an=j*Math.PI/6;ctx.beginPath();
         ctx.moveTo(cx+Math.cos(an)*(6+k*20),cy+Math.sin(an)*(6+k*20));ctx.lineTo(cx+Math.cos(an)*(12+k*46),cy+Math.sin(an)*(12+k*46));ctx.stroke()}
-      ctx.font='bold 26px Silkscreen, monospace';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#07081a';
+      ctx.font='bold 26px Silkscreen, "Noto Sans Thai", monospace';ctx.textAlign='center';ctx.lineWidth=5;ctx.strokeStyle='#07081a';
       const tx=Math.min(Math.max(cx,90),W*S-90),ty=Math.min(Math.max(cy-30-age*40,40),H*S-20);
       ctx.strokeText(b.txt,tx,ty);ctx.fillText(b.txt,tx,ty);
-      if(b.txt[0]==='+'){ctx.font='bold 14px Silkscreen, monospace';ctx.strokeText('ÉTINCELLE PIÉGÉE',tx,ty+20);ctx.fillText('ÉTINCELLE PIÉGÉE',tx,ty+20)}}
+      if(b.txt[0]==='+'){ctx.font='bold 14px Silkscreen, "Noto Sans Thai", monospace';ctx.strokeText(T('trapped'),tx,ty+20);ctx.fillText(T('trapped'),tx,ty+20)}}
     ctx.restore();
   }
   if(drawing&&fuse>0&&trail.length){const i=trail[Math.min(trail.length-1,Math.floor(fuse))];
@@ -728,31 +842,31 @@ function showOv(title,text,btn,o={}){
   $('diffBox').hidden=!o.menu;$('hiLink').hidden=!o.menu;$('hiBox').hidden=!o.table;if(o.table)renderHi();ov.classList.toggle('menu',!!o.menu);
   $('ovT').textContent=title;$('ovP').textContent=text;$('ovP').hidden=!text;$('ovB').textContent=btn;ov.hidden=false}
 function goTitle(){state='title';newIds=[];renderPSel();
-  showOv('Qix',"Clôturez 75 % de l'écran. Poussez le joystick vers la zone noire pour tracer, puis revenez sur une bordure pour refermer. Évitez le Qix et les étincelles, ou piégez une étincelle dans une zone refermée pour la détruire.",'JOUER',{menu:true})}
+  showOv('Qix',T('intro'),T('play'),{menu:true})}
 function renderPSel(){
   document.querySelectorAll('#pSel button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.n===nP));
-  $('n2wrap').hidden=nP<2;$('n1').value=names[0].startsWith('JOUEUR ')?'':names[0];$('n2').value=names[1].startsWith('JOUEUR ')?'':names[1];
+  $('n2wrap').hidden=nP<2;$('n1').value=names[0];$('n2').value=names[1];
 }
 document.querySelectorAll('#pSel button').forEach(b=>b.addEventListener('click',()=>{nP=+b.dataset.n;try{localStorage.setItem('qixPlayers',nP)}catch(e){}renderPSel();hud()}));
 function renderHi(){
   const hi=loadHi(),tb=$('hiTable');tb.replaceChildren();
   const row=(cells,tag='td',cls)=>{const tr=document.createElement('tr');if(cls)tr.className=cls;
     cells.forEach(([v,c])=>{const td=document.createElement(tag);td.textContent=v;if(c)td.className=c;tr.appendChild(td)});tb.appendChild(tr)};
-  if(!hi.length){row([['Aucun record pour l’instant. À vous de jouer !']]);return}
-  row([['#'],['Nom'],['Score'],['Niv.'],['Difficulté'],['Date']],'th');
-  hi.forEach((h,i)=>row([[i+1],[h.name],[h.score.toLocaleString('fr-FR'),'n'],[h.level,'n'],[h.diff||''],[h.date||'']],'td',newIds.includes(h.id)?'new':''));
+  if(!hi.length){row([[T('noRecords')]]);return}
+  row([['#'],[T('thName')],[T('thScore')],[T('thLvl')],[T('diff')],[T('thDate')]],'th');
+  hi.forEach((h,i)=>row([[i+1],[h.name],[h.score.toLocaleString(LOC()),'n'],[h.level,'n'],[typeof h.diffIdx==='number'?T('dname'+h.diffIdx):(h.diff||'')],[h.date||'']],'td',newIds.includes(h.id)?'new':''));
 }
 ['n1','n2'].forEach(id=>$(id).addEventListener('input',()=>{readNames();hud()}));
-$('hiLink').addEventListener('click',()=>{readNames();state='hiscores';showOv('Records','','RETOUR',{table:true})});
+$('hiLink').addEventListener('click',()=>{readNames();state='hiscores';showOv(T('recordsTitle'),'',T('back'),{table:true})});
 function hud(){
-  const hi=loadHi();$('hiTop').textContent=(hi[0]?hi[0].score:0).toLocaleString('fr-FR');$('hiName').textContent=hi[0]?`RECORD ${hi[0].name}`:'RECORD';
+  const hi=loadHi();$('hiTop').textContent=(hi[0]?hi[0].score:0).toLocaleString(LOC());$('hiName').textContent=hi[0]?T('recordBy',{name:hi[0].name}):T('record');
   const two=nP>1;$('sb1').hidden=!two;$('sb2').hidden=!two;
   if(two){[0,1].forEach(i=>{const s=i===cur?score:(players[i]?players[i].score:0);
-    $('s'+(i+1)).textContent=s.toLocaleString('fr-FR');$('sb'+(i+1)+'n').textContent=pName(i);
+    $('s'+(i+1)).textContent=s.toLocaleString(LOC());$('sb'+(i+1)+'n').textContent=pName(i);
     $('sb'+(i+1)).classList.toggle('active',i===cur&&state!=='title')})}
-  $('hScoreL').textContent=two?pName(cur):'Score';
-  $('hScore').textContent=score.toLocaleString('fr-FR');$('hPct').textContent=pct.toFixed(1).replace('.',',')+' %';
-  $('hDiff').textContent=DF().name;$('hLives').textContent=lives>0?'♦'.repeat(lives):'—';$('hLevel').textContent=level;
+  $('hScoreL').textContent=two?pName(cur):T('score');
+  $('hScore').textContent=score.toLocaleString(LOC());$('hPct').textContent=fmtPct(pct)+' %';
+  $('hDiff').textContent=T('dname'+diffIdx);$('hLives').textContent=lives>0?'♦'.repeat(lives):'—';$('hLevel').textContent=level;
   $('mFill').style.width=Math.min(100,pct)+'%';
 }
 function primary(){
@@ -763,21 +877,21 @@ function primary(){
   else if(state==='paused'){state='play';ov.hidden=true}
 }
 function togglePause(){
-  if(state==='play'){state='paused';sfx.pause();held.length=0;stickDir=null;showOv('Pause','Appuyez sur START, P ou Entrée pour reprendre.','Reprendre')}
+  if(state==='play'){state='paused';sfx.pause();held.length=0;stickDir=null;showOv(T('pauseTitle'),T('pauseText'),T('resume'))}
   else if(state==='paused')primary();
 }
 $('ovB').addEventListener('click',primary);
 $('bStart').addEventListener('click',()=>{if(state==='play')togglePause();else primary()});
 $('bPause').addEventListener('click',togglePause);
-function sndLabel(){$('bSndL').textContent=sfx.muted?'MUET':'SON ♪';$('bSnd').classList.toggle('muted',sfx.muted)}
+function sndLabel(){$('bSndL').textContent=sfx.muted?T('mute'):T('sound');$('bSnd').classList.toggle('muted',sfx.muted)}
 function toggleSnd(){sfx.resume();sfx.toggle();sndLabel();if(!sfx.muted)sfx.pause()}
 $('bSnd').addEventListener('click',()=>{toggleSnd();$('bSnd').blur()});
 sndLabel();
 
 function setDiff(i){diffIdx=i;try{localStorage.setItem('qixDiff',i)}catch(e){}
   document.querySelectorAll('#diff button').forEach((b,k)=>b.setAttribute('aria-pressed',k===i));
-  $('diffInfo').textContent=DIFFS[i].info;if(state==='title'||state==='over'){lives=DF().lives}hud()}
-DIFFS.forEach((d,i)=>{const b=document.createElement('button');b.type='button';b.textContent=d.name.toUpperCase();
+  $('diffInfo').textContent=T('dinfo'+i);if(state==='title'||state==='over'){lives=DF().lives}hud()}
+DIFFS.forEach((d,i)=>{const b=document.createElement('button');b.type='button';b.dataset.d=i;b.textContent=T('dname'+i).toUpperCase();
   b.addEventListener('click',()=>setDiff(i));$('diff').appendChild(b)});
 
 function toggleFs(){
@@ -787,7 +901,7 @@ function toggleFs(){
   }catch(e){}
 }
 $('bFs').addEventListener('click',()=>{toggleFs();$('bFs').blur()});
-document.addEventListener('fullscreenchange',()=>{$('bFsL').textContent=document.fullscreenElement?'QUITTER':'ÉCRAN'});
+document.addEventListener('fullscreenchange',()=>{$('bFsL').textContent=document.fullscreenElement?T('quit'):T('screen')});
 
 // keyboard
 const KEYMAP={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyW:'up',KeyS:'down',KeyA:'left',KeyD:'right',KeyZ:'up',KeyQ:'left'};
@@ -876,7 +990,7 @@ addEventListener('appinstalled',()=>{$('installBox').hidden=true});
 const iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 if(iOS&&!standalone&&location.protocol.startsWith('http')){$('iosHint').hidden=false;$('installBox').hidden=false}
 
-newLevel();setDiff(diffIdx);goTitle();hud();fit();requestAnimationFrame(frame);
+buildLangSel();newLevel();setDiff(diffIdx);applyLang();goTitle();hud();fit();requestAnimationFrame(frame);
 })();
 </script>
 
